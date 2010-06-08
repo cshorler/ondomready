@@ -4,8 +4,8 @@
  * Licensed under the MIT license.
  */
 
-function onDOMReady(fn, ctx){
-	var ready, timer;
+onDOMReady = (function(){
+	var ready, timer, setup = false, stack = [];
 	var onStateChange = function(e){
 		//Mozilla & Opera
 		if(e && e.type == "DOMContentLoaded"){
@@ -32,8 +32,10 @@ function onDOMReady(fn, ctx){
 	var fireDOMReady = function(){
 		if(!ready){
 			ready = true;
-			//Call the onload function in given context or window object
-			fn.call(ctx || window);
+			//Call the stack of onload functions in given context or window object
+			for(var i=0, len=stack.length; i < len; i++){
+				stack[i][0].call(stack[i][1] || window);	
+			}
 			//Clean up after the DOM is ready
 			if(document.removeEventListener)
 				document.removeEventListener("DOMContentLoaded", onStateChange, false);
@@ -44,13 +46,20 @@ function onDOMReady(fn, ctx){
 		}
 	};
 	
-	//Mozilla & Opera
-	if(document.addEventListener)
-		document.addEventListener("DOMContentLoaded", onStateChange, false);
-	//IE
-	document.onreadystatechange = onStateChange;
-	//Safari & IE
-	timer = setInterval(onStateChange, 5);
-	//Legacy
-	window.onload = onStateChange;
-};
+	return function(fn, ctx){
+		if(!setup){
+			//We only need to do this once
+			setup = true;
+			//Mozilla & Opera
+			if(document.addEventListener)
+				document.addEventListener("DOMContentLoaded", onStateChange, false);
+			//IE
+			document.onreadystatechange = onStateChange;
+			//Safari & IE
+			timer = setInterval(onStateChange, 5);
+			//Legacy
+			window.onload = onStateChange;
+		}
+		stack.push([fn, ctx]);
+	}
+})();
