@@ -4,7 +4,7 @@
  * Licensed under the MIT license.
  */
 
-onDOMReady = (function(){
+var onDOMReady = (function(){
 	var ready, timer, setup = false, stack = [];
 	var onStateChange = function(e){
 		//Mozilla & Opera
