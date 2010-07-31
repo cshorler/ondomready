@@ -10,4 +10,4 @@ For more information regarding onDOMReady, please visit the blog post located he
 
 ### License ###
 
-onDOMReady is is licensed under the terms of the MIT License, see the included license.txt file.
+onDOMReady is licensed under the terms of the MIT License, see the included license.txt file.
