@@ -38,7 +38,7 @@
 			ready = true;
 			//Call the stack of onload functions in given context or window object
 			for(var i=0, len=stack.length; i < len; i++){
-				stack[i][0].call(stack[i][1] || window);	
+				stack[i][0].call(stack[i][1]);	
 			}
 			//Clean up after the DOM is ready
 			if(doc.removeEventListener)
@@ -52,9 +52,11 @@
 	
 	//Primary method
 	win.onDOMReady = function(fn, ctx){
+		//Normalize the context of the callback
+		ctx = ctx || win;
 		if(ready){
 			//If the DOM is ready, call the function and return
-			fn.call(ctx || window);
+			fn.call(ctx);
 			return;
 		}
 		if(!setup){
